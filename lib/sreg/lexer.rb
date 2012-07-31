@@ -19,16 +19,16 @@ module Sreg
 
       attr :stream
 
-      def initialize()
+      def initialize(scanner_options = {})
         reset
+        @scanner_options.merge(scanner_options)
       end
 
-      def set_input_string(string, regexp_options = {}, scanner_options = {})
+      def set_input_string(string, regexp_options = {})
         reset
         @string = string
         @stream = StringIO.new(string)
-        @options = regexp_options
-        @scanner_options = scanner_options
+        @options.merge(regexp_options)
       end
 
 
@@ -76,7 +76,6 @@ module Sreg
             return ['(', nil]
           end
 
-          
         when ')'
           if @state[:in_char_class]
             return [:CHAR, ')']
@@ -88,7 +87,7 @@ module Sreg
               return [:CHAR, ')']
             end
           end
-          
+
         when '['
           if @state[:in_char_class]
             return [:CHAR, '[']
@@ -131,7 +130,7 @@ module Sreg
             @state[:in_repetition_spec] = true
             return parse_repetition
           end
-          
+
         when '}'
           return [:CHAR, '}']
 
@@ -147,7 +146,7 @@ module Sreg
           return [:CHAR, char]
         end
       end
-      
+
       private
       def reset
         @string = ''
@@ -160,17 +159,17 @@ module Sreg
         @options = {}
         @scanner_options = {}
       end
-      
+
       def parse_repetition
         unless @state[:in_repetition_spec]
           error 'Invalid calling `parse_repetition`.'
         end
-        
+
         min = get_integer
         min = -1 if min.nil?  # Zero maybe
-        
-        if @stream.getc != ','
-          next_char = @stream.getc
+
+        next_char = @stream.getc
+        if next_char != ','
           if next_char == '}' # Fixed time repetition
             if min != -1
               return [:VAR_REPETITION, [min, min]]
@@ -182,18 +181,18 @@ module Sreg
             error 'Invalid repetition specification.'
           end
         end
-        
+
         max = get_integer
         max = -1 if max.nil? # Infinity
-        
-        
+
+
         if @stream.getc != '}'
           error 'Invalid repetition specification.'
         end
-        
+
         @state[:in_repetition_spec] = false
-        
-        
+
+
         if max == -1 and min == -1
           error 'Invalid repetition specification.'
         elsif max != -1 and min == -1
@@ -205,13 +204,13 @@ module Sreg
         else
           error 'Repetition specification min > max.'
         end
-        
+
       end
-      
+
       def get_integer
         number_str = ''
         digit = ''
-        
+
         loop do
           digit = @stream.getc
           if ('0'..'9').include? digit
@@ -220,13 +219,13 @@ module Sreg
             break
           end
         end
-        
+
         @stream.ungetc(digit) unless digit.nil?
-        
+
         return nil if number_str.empty?
         return number_str.to_i
       end
-      
+
     end
   end
 end

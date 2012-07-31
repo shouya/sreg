@@ -13,8 +13,8 @@ class TestLexer < Test::Unit::TestCase
     lexer.set_input_string(init_string, {}, { :debug => debug })
     return lexer
   end
-  
-  
+
+
 
   def test_group
     assert_equal(build_lexer('(6)*)').tokens[0..-2],
@@ -47,13 +47,13 @@ class TestLexer < Test::Unit::TestCase
 
   end
 
-  
+
   def test_repetition_regular
     assert_equal(build_lexer('**').tokens[0..-2], [['*', nil], ['*', nil]])
     assert_equal(build_lexer('+*').tokens[0..-2], [['+', nil], ['*', nil]])
     assert_equal(build_lexer('?+').tokens[0..-2], [['?', nil], ['+', nil]])
   end
-  
+
 
   def test_dot
     assert_equal(build_lexer('.').tokens[0..-2], [['.', nil]])

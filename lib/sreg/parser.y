@@ -1,4 +1,4 @@
-# --*- bison -*-
+# -*- bison -*-
 #
 # Regular Expression syntax parser of Sreg project
 #
@@ -27,8 +27,8 @@ group
     ;
 
 repetition
-    : atom '+'             { Repetition.new(val[0], 1, Repetition.Inf) }
-    | atom '*'             { Repetition.new(val[0], 0, Repetition.Inf) }
+    : atom '+'             { Repetition.new(val[0], 1, Repetition::Inf) }
+    | atom '*'             { Repetition.new(val[0], 0, Repetition::Inf) }
     | atom '?'             { Repetition.new(val[0], 0, 1) }
     | atom VAR_REPETITION  { Repetition.new(val[0], val[1][0], val[1][1]) }
     ;
@@ -36,7 +36,7 @@ repetition
 
 char_class_item
     : CHAR                 { CharacterClassItemCharacter.new(val[0]) }
-    | CHAR '-' CHAR        { CharacterClassItemRange.new(val[0], val[1]) }
+    | CHAR '-' CHAR        { CharacterClassItemRange.new(val[0], val[2]) }
 /* and ANSI char groups, such as [:alpha:] */
     ;
 
