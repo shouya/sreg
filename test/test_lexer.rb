@@ -9,8 +9,8 @@ class TestLexer < Test::Unit::TestCase
 
 
   def build_lexer(init_string, debug = false)
-    lexer = Sreg::Builder::Lexer.new()
-    lexer.set_input_string(init_string, {}, { :debug => debug })
+    lexer = Sreg::Builder::Lexer.new({ :debug => debug })
+    lexer.set_input_string(init_string)
     return lexer
   end
 

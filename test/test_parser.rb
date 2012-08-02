@@ -12,7 +12,7 @@ class TestParser < Test::Unit::TestCase
 
   def test_plain
     assert_equal 'abcde', parse('abcde').to_s
-    assert_equal(:any_character, parse('ab.de').as_json[2].keys[0])
+    assert_equal(:any_char, parse('ab.de').as_json[2].keys[0])
   end
 
   def test_char_class
