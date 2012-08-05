@@ -19,6 +19,17 @@ module Sreg
 
       attr :stream
 
+      ESCAPE_SEQENCES = {
+        'n' => "\n",
+        't' => "\t",
+        'r' => "\r",
+        'a' => "\a",
+        'e' => "\e",
+      }
+
+      SPEC_CHAR_CLASSES = %w/w s d v h/
+      SPEC_CHAR_CLASSES_INV = SPEC_CHAR_CLASSES.map(&:upcase)
+
       def initialize(scanner_options = {})
         reset
         @scanner_options.merge(scanner_options)
@@ -135,12 +146,10 @@ module Sreg
           return [:CHAR, '}']
 
         when '\\'
-          escaped_char = @stream.getc
-          if escaped_char
-            return [:CHAR, escaped_char]
-          else
-            error 'Undesignated escaped charater.'
-          end
+          return parse_escape
+
+        when '^', '$'
+          return [char, nil]
 
         else
           return [:CHAR, char]
@@ -165,8 +174,7 @@ module Sreg
           error 'Invalid calling `parse_repetition`.'
         end
 
-        min = get_integer
-        min = -1 if min.nil?  # Zero maybe
+        min = (peek_char == ',' ? -1 : get_integer)
 
         next_char = @stream.getc
         if next_char != ','
@@ -182,9 +190,7 @@ module Sreg
           end
         end
 
-        max = get_integer
-        max = -1 if max.nil? # Infinity
-
+        max = peek_char == '}' ? -1 : get_integer
 
         if @stream.getc != '}'
           error 'Invalid repetition specification.'
@@ -207,13 +213,56 @@ module Sreg
 
       end
 
-      def get_integer
+
+      def parse_escape
+        escaped_char = @stream.getc
+        error 'Undesignated escaped charater.' unless escaped_char
+
+
+
+        case escaped_char
+        when *ESCAPE_SEQENCES.keys
+          return [:CHAR, ESCAPE_SEQENCES[escaped_char]]
+
+
+        when '0'
+          return [:CHAR, "\0"] unless ('0'..'9').include?(peek_char)
+          return [:CHAR, get_octal.chr]
+
+        when 'x', 'X'
+          if peek_char == '{'
+            @stream.getc
+            hex = get_hex
+            error 'invalid quoted hex char' if peek_char != '}'
+            @stream.getc
+            return [:CHAR, hex.chr]
+          else
+            return [:CHAR, get_hex.chr]
+          end
+
+
+        when *SPEC_CHAR_CLASSES
+          return [:SPEC_CHAR_CLASS, escaped_char]
+        when *SPEC_CHAR_CLASSES_INV
+          return [:SPEC_CHAR_CLASS_INV, escaped_char]
+
+        when '1'..'9'
+          @stream.ungetc(escaped_char)
+          return [:BACK_REFERENCE, get_integer]
+
+        else
+          return [:CHAR, escaped_char]
+
+        end
+      end
+
+      def get_integer(digit_range = '0'..'9', base = 10)
         number_str = ''
         digit = ''
 
         loop do
           digit = @stream.getc
-          if ('0'..'9').include? digit
+          if digit_range.include? digit
             number_str << digit unless (number_str.empty? and digit == 0)
           else
             break
@@ -222,8 +271,21 @@ module Sreg
 
         @stream.ungetc(digit) unless digit.nil?
 
-        return nil if number_str.empty?
-        return number_str.to_i
+        error 'Invalid character.' if number_str.empty?
+
+        return number_str.to_i(base)
+      end
+
+      def get_octal
+        get_integer('0'..'7', 8)
+      end
+      def get_hex
+        get_integer(('0'..'9').to_a + ('a'..'f').to_a + ('A'..'F').to_a, 16)
+      end
+
+      def peek_char
+        @stream.ungetc(tmp = @stream.getc)
+        return tmp
       end
 
     end
