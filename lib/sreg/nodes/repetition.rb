@@ -14,7 +14,7 @@ module Sreg
 
 
 
-      class Repetition < Node
+      class AbsRepetition < Node
         Inf = -1
 
         attr_reader :min, :max
@@ -62,13 +62,13 @@ module Sreg
 
 
 
-        attr :repeat
+        attr :repeat, :rest_repeat
         def length
           @repeat.map(&:first).inject(0, &:+)
         end
 
         def compromise?
-          @repeat and @repeat.length > @min
+#          @repeat and @repeat.length > @min
         end
         def compromise(*)
           @repeat.pop
@@ -82,16 +82,13 @@ module Sreg
         def reset(rest_string)
           repeat = match_time(rest_string)
 
-          if repeat.length == 0
-            return false
-          else
-            repe_time = repeat.length
-            if repe_time >= @min and repe_time <= expand(@max)
-              @valid = true
-              @repeat = repeat
-              return length
-            end
+          if repe_time = pick_init_time(repeat)
+            @repeat = repeat[0, repe_time]
+            @rest_repeat = repeat[repe_time..-1]
+            @valid = true
+            return length
           end
+
 
           @valid = false
           return false
@@ -116,6 +113,12 @@ module Sreg
 
           arr
         end
+
+        def pick_init_time(matches)
+          # abstract method
+          # return nil if fail, otherwise return the prior initial time
+        end
+
 
       end
 

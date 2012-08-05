@@ -53,6 +53,15 @@ class TestParser < Test::Unit::TestCase
     assert_equal :repetition, parse('a{1,3}').as_json[0].keys[0]
     assert_equal :repetition, parse('a{2}').as_json[0].keys[0]
 
+    assert_equal :greedy, parse('a+').as_json[0][:behavior]
+    assert_equal :greedy, parse('a?').as_json[0][:behavior]
+    assert_equal :greedy, parse('a*').as_json[0][:behavior]
+    assert_equal :greedy, parse('a{,3}').as_json[0][:behavior]
+    assert_equal :greedy, parse('a{1,}').as_json[0][:behavior]
+    assert_equal :greedy, parse('a{1,3}').as_json[0][:behavior]
+    assert_equal :greedy, parse('a{2}').as_json[0][:behavior]
+
+
     assert_equal 3, parse('(abc)+').as_json[0].values[0].values[0].length
     assert_equal 3, parse('([a]+(b)?c)+').as_json[0].values[0].values[0].length
 
@@ -75,4 +84,48 @@ class TestParser < Test::Unit::TestCase
     assert_equal 2, parse('a{2}').as_json[0][:min]
     assert_equal 2, parse('a{2,2}').as_json[0][:min]
   end
+
+  def test_repetition_lazy
+    inf = -1
+
+    assert_equal :repetition, parse('a+?').as_json[0].keys[0]
+    assert_equal :repetition, parse('a??').as_json[0].keys[0]
+    assert_equal :repetition, parse('a*?').as_json[0].keys[0]
+    assert_equal :repetition, parse('a{,3}?').as_json[0].keys[0]
+    assert_equal :repetition, parse('a{1,}?').as_json[0].keys[0]
+    assert_equal :repetition, parse('a{1,3}?').as_json[0].keys[0]
+    assert_equal :repetition, parse('a{2}?').as_json[0].keys[0]
+
+    assert_equal :lazy, parse('a+?').as_json[0][:behavior]
+    assert_equal :lazy, parse('a??').as_json[0][:behavior]
+    assert_equal :lazy, parse('a*?').as_json[0][:behavior]
+    assert_equal :lazy, parse('a{,3}?').as_json[0][:behavior]
+    assert_equal :lazy, parse('a{1,}?').as_json[0][:behavior]
+    assert_equal :lazy, parse('a{1,3}?').as_json[0][:behavior]
+    assert_equal :lazy, parse('a{2}?').as_json[0][:behavior]
+
+    assert_equal 3, parse('(abc)+?').as_json[0].values[0].values[0].length
+    assert_equal 3, parse('([a]+(b)?c)+?').as_json[0].values[0].values[0].length
+
+    assert_equal inf, parse('a+?').as_json[0][:max]
+    assert_equal inf, parse('a*?').as_json[0][:max]
+    assert_equal 1, parse('a??').as_json[0][:max]
+    assert_equal inf, parse('a{1,}?').as_json[0][:max]
+    assert_equal 2, parse('a{,2}?').as_json[0][:max]
+    assert_equal 2, parse('a{1,2}?').as_json[0][:max]
+    assert_equal 2, parse('a{2}?').as_json[0][:max]
+    assert_equal 2, parse('a{2,2}?').as_json[0][:max]
+
+
+    assert_equal 1, parse('a+?').as_json[0][:min]
+    assert_equal 0, parse('a*?').as_json[0][:min]
+    assert_equal 0, parse('a??').as_json[0][:min]
+    assert_equal 1, parse('a{1,}?').as_json[0][:min]
+    assert_equal 0, parse('a{,2}?').as_json[0][:min]
+    assert_equal 1, parse('a{1,2}?').as_json[0][:min]
+    assert_equal 2, parse('a{2}?').as_json[0][:min]
+    assert_equal 2, parse('a{2,2}?').as_json[0][:min]
+  end
+
+
 end

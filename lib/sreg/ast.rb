@@ -21,8 +21,9 @@ module Sreg
       autoload(:Group, 'group')
       autoload(:Bunch, 'bunch')
       autoload(:AnyCharacter, 'any_char')
-      autoload(:Repetition, 'repetition')
-
+      autoload(:AbsRepetition, 'repetition')
+      autoload(:LazyRepetition, 'repetition_lazy')
+      autoload(:GreedyRepetition, 'repetition_greedy')
 
 
     end

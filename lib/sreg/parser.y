@@ -27,10 +27,18 @@ group
     ;
 
 repetition
-    : atom '+'             { Repetition.new(val[0], 1, Repetition::Inf) }
-    | atom '*'             { Repetition.new(val[0], 0, Repetition::Inf) }
-    | atom '?'             { Repetition.new(val[0], 0, 1) }
-    | atom VAR_REPETITION  { Repetition.new(val[0], val[1][0], val[1][1]) }
+    : meta_repetition      {
+            GreedyRepetition.new(val[0][0], val[0][1], val[0][2])
+        }
+    | meta_repetition '?'  {
+            LazyRepetition.new(val[0][0], val[0][1], val[0][2])
+        }
+
+meta_repetition
+    : atom '+'             { [val[0], 1, AbsRepetition::Inf] }
+    | atom '*'             { [val[0], 0, AbsRepetition::Inf] }
+    | atom '?'             { [val[0], 0, 1] }
+    | atom VAR_REPETITION  { [val[0], val[1][0], val[1][1]] }
     ;
 
 
