@@ -36,7 +36,7 @@ module Sreg
             else
               arr << x.as_json.merge(:match => string[pos, x.length])
             end
-              pos += x.length
+            pos += x.length
           end
           arr
         end

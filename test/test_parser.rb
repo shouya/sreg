@@ -19,14 +19,14 @@ class TestParser < Test::Unit::TestCase
     assert_equal :char_class, parse('[abc]').as_json[0].keys[0]
     assert_equal :char_class, parse('[a-c]').as_json[0].keys[0]
     assert_equal([{:char => 'a'}, {:char => 'b'}, {:char => 'c'}],
-                 parse('[abc]').as_json[0][:char_class])
+                 parse('[abc]').as_json[0][:children])
 
     assert_equal({ :range_begin => 'a', :range_end => 'c' },
-                 parse('[a-c]').as_json[0][:char_class][0])
+                 parse('[a-c]').as_json[0][:children][0])
     assert_equal([{:char => 'a'},
                   {:range_begin => 'b', :range_end => 'd'},
                   {:char => 'e'}],
-                 parse('[ab-de]').as_json[0][:char_class])
+                 parse('[ab-de]').as_json[0][:children])
   end
 
   def test_group

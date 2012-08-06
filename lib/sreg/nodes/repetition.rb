@@ -64,7 +64,7 @@ module Sreg
 
         attr :repeat, :rest_repeat
         def length
-          @repeat.map(&:first).inject(0, &:+)
+          @valid ? @repeat.map(&:first).inject(0, &:+) : 0
         end
 
         def compromise?

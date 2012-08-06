@@ -8,27 +8,21 @@ module Sreg
 
     module AbstractSyntaxTree
 
-      class CharacterClass < Node
+      class AbsCharacterClass < Node
 
-        attr_reader :elements
-        def initialize(elements)
-          @elements = elements
+        def initialize
           @valid = nil
-        end
-        def append(element)
-          @elements << element
-          self
         end
 
         # Compile time
         def as_json
           {
-            :char_class => @elements.map(&:as_json)
+            :char_class => class_name
           }
         end
 
+        # Abstract method
         def to_s
-          "[#{@elements.map(&:to_s).join}]"
         end
 
         # Run time
@@ -49,12 +43,30 @@ module Sreg
         end
 
         def reset(rest_string)
-          if @elements.any? {|e| e.match?(rest_string[0]) }
+          unless rest_string.length > 1
+            @valid = false
+            return false
+          end
+
+          if match_char?(rest_string[0])
             @valid = true
             return 1
           end
+
           @valid = false
           return false
+        end
+
+        private
+        # Abstract method
+        def match_char?(char)
+          # determine if this char class mathes the character,
+          # and return true or false
+        end
+
+        # Abstract method
+        def class_name
+          # return a string that is the name of this char class
         end
 
       end

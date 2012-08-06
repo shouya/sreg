@@ -104,7 +104,13 @@ module Sreg
             return [:CHAR, '[']
           else
             @state[:in_char_class] = true
-            return ['[', nil]
+
+            if peek_char == '^'
+              @stream.getc
+              return ['[^', nil]
+            else
+              return ['[', nil]
+            end
           end
 
         when ']'
