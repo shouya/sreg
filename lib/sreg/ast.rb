@@ -30,6 +30,7 @@ module Sreg
       autoload(:CharacterClassItemRange, 'char_class_range')
       autoload(:CharacterClassItemCharacter, 'char_class_char')
       autoload(:SpecialCharacterClassItem, 'special_char_class')
+      autoload(:POSIXCharacterClassItem, 'posix_char_class_item')
 
       # Repetition
       autoload(:AbsRepetition, 'repetition')

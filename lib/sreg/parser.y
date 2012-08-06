@@ -47,7 +47,7 @@ char_class_item
     : CHAR                 { CharacterClassItemCharacter.new(val[0]) }
     | CHAR '-' CHAR        { CharacterClassItemRange.new(val[0], val[2]) }
     | SPEC_CHAR_CLASS      { SpecialCharacterClassItem.new(val[0]) }
-      /* and POSIX char groups, such as [:alpha:] */
+    | POSIX_CHAR_CLASS     { POSIXCharacterClassItem.new(val[0]) }
     ;
 
 char_class_items

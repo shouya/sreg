@@ -127,5 +127,17 @@ class TestParser < Test::Unit::TestCase
     assert_equal 2, parse('a{2,2}?').as_json[0][:min]
   end
 
+  def test_posix_char_class
+    assert_equal :ascii, parse('[[:ascii:]]').as_json[0][:children][0][:posix]
+    assert_equal :ascii, parse('[a[:ascii:]]').as_json[0][:children][1][:posix]
+    assert_equal :ascii, parse('[[:ascii:]1]').as_json[0][:children][0][:posix]
+    assert_equal :ascii, parse('[a[:ascii:]1]').as_json[0][:children][1][:posix]
+    assert_equal :digit, parse('[^[:digit:]]').as_json[0][:children][0][:posix]
+    assert_equal true, parse('[^[:digit:]]').as_json[0][:inversed]
+    assert_equal({:range_begin => ?a, :range_end => ?z },
+                 parse('[a-z[:digit:]]').as_json[0][:children][0])
+    assert_equal({:posix => :digit},
+                 parse('[a-z[:digit:]]').as_json[0][:children][1])
+  end
 
 end

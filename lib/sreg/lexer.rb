@@ -117,10 +117,20 @@ module Sreg
 
         when '['
           if @state[:in_char_class]
-            return [:CHAR, '[']
+            if peek_char == ':'
+              @stream.getc
+              pclass_name = get_letters
+              if @stream.getc == ':'
+                if @stream.getc == ']'
+                  return [:POSIX_CHAR_CLASS, pclass_name]
+                end
+              end
+              error 'Invalid syntax for POSIX char class.'
+            else
+              return [:CHAR, '[']
+            end
           else
             @state[:in_char_class] = true
-
             if peek_char == '^'
               @stream.getc
               return ['[^', nil]
@@ -279,22 +289,8 @@ module Sreg
       end
 
       def get_integer(digit_range = '0'..'9', base = 10)
-        number_str = ''
-        digit = ''
-
-        loop do
-          digit = @stream.getc
-          if digit_range.include? digit
-            number_str << digit unless (number_str.empty? and digit == 0)
-          else
-            break
-          end
-        end
-
-        @stream.ungetc(digit) unless digit.nil?
-
+        number_str = get_chars(digit_range)
         error 'Invalid character.' if number_str.empty?
-
         return number_str.to_i(base)
       end
 
@@ -303,6 +299,28 @@ module Sreg
       end
       def get_hex
         get_integer(('0'..'9').to_a + ('a'..'f').to_a + ('A'..'F').to_a, 16)
+      end
+
+      def get_letters
+        get_chars(('a'..'z').to_a + ('A'..'Z').to_a)
+      end
+
+      def get_chars(char_range)
+        result_str = ''
+        char = nil
+
+        loop do
+          char = @stream.getc
+          if char_range.include? char
+            result_str << char
+          else
+            break
+          end
+        end
+
+        @stream.ungetc(char)
+
+        result_str
       end
 
       def peek_char

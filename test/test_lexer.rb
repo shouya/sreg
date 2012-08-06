@@ -107,6 +107,19 @@ class TestLexer < Test::Unit::TestCase
     assert_lexical_error('(?#wtf')
   end
 
+  def test_posix_char_class
+    assert_equal([['[', nil], [:POSIX_CHAR_CLASS, 'ascii'], [']', nil]],
+                 scan('[[:ascii:]]'))
+    assert_equal([['[', nil], [:CHAR, 'a'],
+                  [:POSIX_CHAR_CLASS, 'ascii'],
+                  [:CHAR, 'b'], [']', nil]],
+                 scan('[a[:ascii:]b]'))
+    assert_equal([['[', nil],
+                  [:CHAR, 'a'], ['-', nil], [:CHAR, 'b'],
+                  [:POSIX_CHAR_CLASS, 'ascii'],
+                  [:CHAR, '['], [']', nil]],
+                 scan('[a-b[:ascii:][]'))
+  end
 end
 
 
