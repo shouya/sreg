@@ -96,6 +96,17 @@ class TestLexer < Test::Unit::TestCase
                   [']', nil]])
   end
 
+
+  def test_comment
+    assert_equal([], scan('(?#this is just a comment)'))
+    assert_equal([], scan('(?#this is just\)a comment)'))
+    assert_equal([], scan('(?#this is just (group? not!\) a comment)'))
+    assert_equal([], scan('(?# ~!@#$%^&*(\){}[];\':",./<>?\\\\)'))
+    assert_equal([], scan('(?#)'))
+    assert_equal([[:CHAR, ')']], scan('(?# ())'))
+    assert_lexical_error('(?#wtf')
+  end
+
 end
 
 

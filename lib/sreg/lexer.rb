@@ -70,7 +70,11 @@ module Sreg
 
         case char
         when nil
-          return [false, false] # EOF
+          if @state[:in_group] != 0
+            error 'Group stack is not terminated.'
+          else
+            return [false, false] # EOF
+          end
 
         when '.'
           if @state[:in_char_class]
@@ -84,7 +88,19 @@ module Sreg
             return [:CHAR, '(']
           else
             @state[:in_group] += 1
-            return ['(', nil]
+            if peek_char == '?'
+              @stream.getc
+              case @stream.getc
+              when '#'
+                error 'Endless comment.' unless eat_until(')')
+                @state[:in_group] -= 1
+                return next_token
+              else
+                error 'Unrecognized extension.'
+              end
+            else
+              return ['(', nil]
+            end
           end
 
         when ')'
@@ -292,6 +308,29 @@ module Sreg
       def peek_char
         @stream.ungetc(tmp = @stream.getc)
         return tmp
+      end
+
+      # Eat until specific character, respect escaping.
+      # returns the length it eats, or nil if EOS reaches.
+      def eat_until(char)
+        length = 0
+
+        loop do
+          c = @stream.getc
+
+          return nil if c.nil?
+
+          if c == '\\'
+            @stream.getc
+            length += 1
+            next
+          end
+
+          length += 1
+
+          break if c == char
+        end
+        return length
       end
 
     end
