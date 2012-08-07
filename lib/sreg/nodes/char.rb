@@ -29,7 +29,7 @@ module Sreg
 
         # Run time
         def length
-          1
+          @valid ? 1 : 0
         end
 
         def compromise?
@@ -44,7 +44,8 @@ module Sreg
           return @valid
         end
 
-        def reset(rest_string)
+        def reset(rest_string, *)
+          super
           if rest_string[0] == @character
             @valid = true
             return 1

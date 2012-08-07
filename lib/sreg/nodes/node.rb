@@ -12,6 +12,9 @@ module Sreg
 
       class Node
 
+        attr_reader :position
+        attr_accessor :parent
+
         def initialize
         end
 
@@ -22,9 +25,9 @@ module Sreg
         end
         def inspect
         end
-#        def match(string)
-#          as_json.merge(:match => string[length])
-#        end
+        def match_result(string)
+          as_json.merge(:match => string[@position, length])
+        end
 
 
         # Run time
@@ -38,7 +41,9 @@ module Sreg
         def valid?
         end
 
-        def reset(rest_string)
+        def reset(rest_string, position)
+          @position = position
+          nil
         end
 
         # For optimization, not used now

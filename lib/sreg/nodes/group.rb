@@ -15,6 +15,7 @@ module Sreg
         attr_reader :member
         def initialize(member)
           @member = member
+          @member.parent = self
         end
 
         # Compile time
@@ -23,6 +24,14 @@ module Sreg
             :group => @member.as_json
           }
         end
+
+        def match_result(string)
+          {
+            :group => @member.match_result
+            :match => string[@position, length]
+          }
+        end
+
         def to_s
           "(#{@member.to_s})"
         end
@@ -42,8 +51,9 @@ module Sreg
           @member.valid?
         end
 
-        def reset(rest_string)
-          @member.reset(rest_string)
+        def reset(rest_string, position)
+          super
+          @member.reset(rest_string, position)
         end
 
 

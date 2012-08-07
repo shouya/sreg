@@ -14,9 +14,12 @@ module Sreg
         def initialize(elements = [])
           @elements = elements
           @valid = nil
+
+          @elements.each { |x| x.parent = self }
         end
         def append(element)
           @elements << element
+          element.parent = self
           self
         end
 
@@ -27,9 +30,12 @@ module Sreg
         def to_s
           elements.map(&:to_s).join
         end
-        def match(string)
+        def match_result(string)
+          @elements.map { |x| x.match_result(string) }
+=begin
           pos = 0
           arr = []
+
           @elements.each do |x|
             if x.class.method_defined? :match
               arr << x.match(string[pos..-1])
@@ -39,6 +45,7 @@ module Sreg
             pos += x.length
           end
           arr
+=end
         end
 
         # Run time
@@ -57,19 +64,21 @@ module Sreg
           return @valid
         end
 
-        def reset(rest_string)
-          reset_from(rest_string, 0)
+        def reset(rest_string, position)
+          super
+          reset_from(rest_string, 0, position)
         end
 
 
-        def reset_from(rest_string, start_from)
+        def reset_from(rest_string, start_from, position)
           interrupted = nil
           failed_item_index = nil
 
           pos = @elements[0...start_from].map(&:length).inject(0, &:+)
+          pos += position
 
           @elements[start_from..-1].each_with_index do |x, idx|
-            if x.reset(rest_string[pos..-1])
+            if x.reset(rest_string[pos..-1], pos)
               pos += x.length
             else
               interrupted = true
@@ -83,7 +92,7 @@ module Sreg
 
           # interrupted
           if start = compromise_from(failed_item_index)
-            return reset_from(rest_string, start)
+            return reset_from(rest_string, start, position)
           else
             return false
           end

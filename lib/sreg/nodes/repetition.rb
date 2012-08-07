@@ -22,6 +22,7 @@ module Sreg
 
         def initialize(member, min, max)
           @member = member
+          @member.parent = self
 
           # -1 == Infinity
           @min = min
@@ -37,6 +38,17 @@ module Sreg
             :max => @max
           }
         end
+
+        def match_result(string)
+          {
+            :repetition => @member.match_result(string),
+            :min => @min,
+            :max => @max,
+            :match => string[@position, length]
+          }
+        end
+
+
         def to_s
           tmp = @member.to_s
           if @min == @max
@@ -56,9 +68,7 @@ module Sreg
           end
           tmp
         end
-        def match(*)
-          return as_json.merge(:match => @repeat)
-        end
+
 
 
 
@@ -79,7 +89,8 @@ module Sreg
           @valid
         end
 
-        def reset(rest_string)
+        def reset(rest_string, *)
+          super
           repeat = match_time(rest_string)
 
           if repe_time = pick_init_time(repeat)
@@ -105,10 +116,16 @@ module Sreg
 
         def match_time(string)
           arr = []
-          while len = @member.reset(string)
+          pos = @position
+          while len = @member.reset(string, pos)
             break if len == 0
             arr << [len, string[0, len]]
             string = string[len..-1]
+            pos += len
+          end
+
+          unless arr.empty?
+            @member.instance_variable_set(:@position, pos - arr[-1][0])
           end
 
           arr

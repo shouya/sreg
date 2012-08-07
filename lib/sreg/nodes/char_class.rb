@@ -27,7 +27,7 @@ module Sreg
 
         # Run time
         def length
-          1
+          @valid ? 1 : 0
         end
 
         def compromise?
@@ -42,8 +42,9 @@ module Sreg
           return @valid
         end
 
-        def reset(rest_string)
-          unless rest_string.length > 1
+        def reset(rest_string, *)
+          super
+          unless rest_string.length >= 1
             @valid = false
             return false
           end
