@@ -74,7 +74,7 @@ module Sreg
 
         attr :repeat, :rest_repeat
         def length
-          @valid ? @repeat.map(&:first).inject(0, &:+) : 0
+          @valid ? @repeat.inject(0, &:+) : 0
         end
 
         def compromise?
@@ -89,9 +89,9 @@ module Sreg
           @valid
         end
 
-        def reset(rest_string, *)
+        def reset(string, position)
           super
-          repeat = match_time(rest_string)
+          repeat = match_time(string)
 
           if repe_time = pick_init_time(repeat)
             @repeat = repeat[0, repe_time]
@@ -115,17 +115,16 @@ module Sreg
         end
 
         def match_time(string)
-          arr = []
+          length_arr = []
           pos = @position
           while len = @member.reset(string, pos)
             break if len == 0
-            arr << [len, string[0, len]]
-            string = string[len..-1]
+            length_arr << len
             pos += len
           end
 
           unless arr.empty?
-            @member.instance_variable_set(:@position, pos - arr[-1][0])
+            @member.instance_variable_set(:@position, pos - length_arr.last)
           end
 
           arr

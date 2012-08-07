@@ -42,14 +42,15 @@ module Sreg
           return @valid
         end
 
-        def reset(rest_string, *)
+        def reset(string, position)
           super
-          unless rest_string.length >= 1
+
+          unless position < string.length
             @valid = false
             return false
           end
 
-          if match_char?(rest_string[0])
+          if match_char?(string[position])
             @valid = true
             return 1
           end

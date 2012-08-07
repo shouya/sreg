@@ -44,9 +44,9 @@ module Sreg
           return @valid
         end
 
-        def reset(rest_string, *)
+        def reset(string, position)
           super
-          if rest_string[0] == @character
+          if string[position] == @character
             @valid = true
             return 1
           end

@@ -43,9 +43,9 @@ module Sreg
           return @valid
         end
 
-        def reset(rest_string, *)
+        def reset(string, position)
           super
-          if rest_string.length >= 1
+          if position < string.length
             @valid = true
             return 1
           end

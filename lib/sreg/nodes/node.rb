@@ -41,7 +41,7 @@ module Sreg
         def valid?
         end
 
-        def reset(rest_string, position)
+        def reset(string, position)
           @position = position
           nil
         end

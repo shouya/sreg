@@ -64,21 +64,21 @@ module Sreg
           return @valid
         end
 
-        def reset(rest_string, position)
+        def reset(string, *)
           super
-          reset_from(rest_string, 0, position)
+          reset_from(string, 0)
         end
 
 
-        def reset_from(rest_string, start_from, position)
+        def reset_from(string, start_from)
           interrupted = nil
           failed_item_index = nil
 
           pos = @elements[0...start_from].map(&:length).inject(0, &:+)
-          pos += position
+          pos += @position
 
           @elements[start_from..-1].each_with_index do |x, idx|
-            if x.reset(rest_string[pos..-1], pos)
+            if x.reset(string, pos)
               pos += x.length
             else
               interrupted = true
@@ -92,7 +92,7 @@ module Sreg
 
           # interrupted
           if start = compromise_from(failed_item_index)
-            return reset_from(rest_string, start, position)
+            return reset_from(string, start)
           else
             return false
           end
