@@ -80,14 +80,14 @@ module Sreg
         #+consider those expressions in this form: `/^12|^34/`
         #+Though it is now unavailable as yet alternation is not supported.
         when '^'
-          if @stream.pos == 0
+          if @stream.pos == 1 # 0 + '^'.length
             return ['^', nil]
           else
             return [:CHAR, '^']
           end
 
         when '$'
-          if @stream.eos?
+          if @stream.eof?
             return ['$', nil]
           else
             return [:CHAR, '$']

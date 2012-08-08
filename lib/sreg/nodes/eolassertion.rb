@@ -17,12 +17,13 @@ module Sreg
 
         def as_json
           {
-            :assertion = :eol
+            :assertion => :eol
           }
         end
         def to_s
           '$'
         end
+
 
         def conform_to?(str, pos)
           return str.length == pos

@@ -140,4 +140,13 @@ class TestParser < Test::Unit::TestCase
                  parse('[a-z[:digit:]]').as_json[0][:children][1])
   end
 
+
+  def test_bol_and_eol
+    assert_equal(:bol, parse('^').as_json[0][:assertion])
+    assert_equal(:eol, parse('$').as_json[0][:assertion])
+
+    assert_equal([:bol, :eol], parse('^$').as_json.map {|x| x[:assertion] })
+    assert_equal(:ascii,
+                 parse('^[[:ascii:]]$').as_json[1][:children][0][:posix])
+  end
 end

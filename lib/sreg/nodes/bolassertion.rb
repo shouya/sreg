@@ -17,7 +17,7 @@ module Sreg
 
         def as_json
           {
-            :assertion = :bol
+            :assertion => :bol
           }
         end
         def to_s

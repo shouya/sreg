@@ -120,6 +120,26 @@ class TestLexer < Test::Unit::TestCase
                   [:CHAR, '['], [']', nil]],
                  scan('[a-b[:ascii:][]'))
   end
+
+
+  def test_bol&eol
+    assert_equal([['^', nil]], scan('^'))
+    assert_equal([['$', nil]], scan('$'))
+
+    assert_equal([['^', nil], ['$', nil]], scan('^$'))
+    assert_equal([[:CHAR, '$'], [:CHAR, '^']], scan('$^'))
+    assert_equal([['^', nil], [:CHAR, '^']], scan('^^'))
+    assert_equal([[:CHAR, '$'], ['$', nil]], scan('$$'))
+
+    assert_equal([[:CHAR, '$'], ['$', nil]], scan('\$$'))
+    assert_equal([[:CHAR, '$'], [:CHAR, '$']], scan('$\$'))
+
+    assert_equal([['^', nil], [:CHAR, '^']], scan('^\^'))
+    assert_equal([[:CHAR, '^'], [:CHAR, '^']], scan('\^^'))
+
+    assert_equal([['^', nil], [:CHAR, 'a'], ['$', nil]], scan('^a$'))
+  end
+
 end
 
 

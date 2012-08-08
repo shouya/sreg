@@ -23,7 +23,7 @@ module Sreg
         end
 
         def match_result(string)
-          as_json.merge(:match => string[@position, length])
+          as_json.merge(:match => @valid)
         end
 
 
@@ -40,6 +40,7 @@ module Sreg
         end
 
         def reset(string, position)
+          super
           @valid = conform_to?(string, position)
           return @valid ? length : false
         end

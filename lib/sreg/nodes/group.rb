@@ -27,7 +27,7 @@ module Sreg
 
         def match_result(string)
           {
-            :group => @member.match_result
+            :group => @member.match_result,
             :match => string[@position, length]
           }
         end
