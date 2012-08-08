@@ -76,6 +76,25 @@ module Sreg
             return [false, false] # EOF
           end
 
+        # This and the '$' below is a temporary solution, as I have to
+        #+consider those expressions in this form: `/^12|^34/`
+        #+Though it is now unavailable as yet alternation is not supported.
+        when '^'
+          if @stream.pos == 0
+            return ['^', nil]
+          else
+            return [:CHAR, '^']
+          end
+
+        when '$'
+          if @stream.eos?
+            return ['$', nil]
+          else
+            return [:CHAR, '$']
+          end
+        # TODO: Give a better solution for these above after alternation
+        #+is supported.
+
         when '.'
           if @state[:in_char_class]
             return [:CHAR, '.']
@@ -249,8 +268,6 @@ module Sreg
       def parse_escape
         escaped_char = @stream.getc
         error 'Undesignated escaped charater.' unless escaped_char
-
-
 
         case escaped_char
         when *ESCAPE_SEQENCES.keys

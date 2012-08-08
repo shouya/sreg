@@ -19,6 +19,7 @@ start main_rule
 rule
 
 main_rule
+/*    : alternation */
     : bunch
     ;
 
@@ -81,11 +82,23 @@ atom
     ;
 
 
+zw_assertion
+    : '^'                               { BOLAssertion.new }
+    | '$'                               { EOLAssertion.new }
+    ;
+
+
 bunch
     : /* Nothing */                     { Bunch.new([]) }
     | bunch atom                        { val[0].append(val[1]) }
     | bunch repetition                  { val[0].append(val[1]) }
+    | bunch zw_assertion                { val[0].append(val[1]) }
     ;
-
+/*
+alternation
+    : bunch                             { Alternation.new([bunch]) }
+    | alternation '|' bunch             { val[0].append(val[2]) }
+    ;
+*/
 
 end

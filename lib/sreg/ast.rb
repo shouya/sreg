@@ -17,7 +17,7 @@ module Sreg
 
 
       # Character class
-      autoload(:AbsCharacterClass, 'char_class')
+      autoload(:AbsCharacterClass, 'char_class') # Abs
       autoload(:CustomCharacterClass, 'custom_char_class')
       autoload(:SpecialCharacterClass, 'special_char_class')
 
@@ -33,7 +33,7 @@ module Sreg
       autoload(:POSIXCharacterClassItem, 'posix_char_class_item')
 
       # Repetition
-      autoload(:AbsRepetition, 'repetition')
+      autoload(:AbsRepetition, 'repetition') # Abs
       autoload(:LazyRepetition, 'repetition_lazy')
       autoload(:GreedyRepetition, 'repetition_greedy')
 
@@ -43,6 +43,10 @@ module Sreg
       autoload(:Bunch, 'bunch')
       autoload(:AnyCharacter, 'any_char')
 
+      # Assertion
+      autoload(:Assertion, 'assertion') # Abs
+      autoload(:BOLAssertion, 'bolassertion')
+      autoload(:EOLAssertion, 'eolassertion')
 
     end
 
