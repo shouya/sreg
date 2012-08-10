@@ -86,12 +86,14 @@ module Sreg
 
       class SpecialCharacterClassItem
         include SpecialCharacterClassMethods
+        public
         def as_json
           {
             :special => name
           }
         end
         alias_method :match?, :match_method
+        public :match?
       end
 
 

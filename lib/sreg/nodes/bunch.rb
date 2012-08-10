@@ -78,7 +78,7 @@ module Sreg
         # Run time
 
         def length
-          @elements.map(&:length).inject(&:+)
+          @elements.map(&:length).inject(0, &:+)
         end
 
         def compromise?(to_which)
@@ -86,9 +86,9 @@ module Sreg
           @elements.reverse.any?(&:compromise?)
         end
 
-        attr :valid
+#        attr :valid
         def valid?
-          return @valid
+          return @elements.all?(&:valid?)
         end
 
         def reset(string, *)
@@ -114,7 +114,8 @@ module Sreg
             end
           end
 
-          return pos unless interrupted
+          # return length
+          return (pos - @position) unless interrupted
 
 
           # interrupted

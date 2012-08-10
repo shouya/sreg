@@ -125,8 +125,8 @@ module Sreg
           pos = @position
           while len = @member.reset(string, pos)
             break if len == 0
-            length_arr << len
-            pos += len
+            length_arr << @member.length
+            pos += @member.length
           end
 
           unless length_arr.empty?

@@ -94,6 +94,7 @@ class TestLexer < Test::Unit::TestCase
                  [['[', nil],
                   [:CHAR, 'a'], ['-', nil], [:CHAR, 'b'],
                   [']', nil]])
+
   end
 
 

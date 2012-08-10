@@ -27,6 +27,8 @@ class TestParser < Test::Unit::TestCase
                   {:range_begin => 'b', :range_end => 'd'},
                   {:char => 'e'}],
                  parse('[ab-de]').as_json[0][:children])
+    assert_raise { parse('[]') }
+
   end
 
   def test_group

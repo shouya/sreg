@@ -45,7 +45,7 @@ module Sreg
 
         def reset(string, position)
           super
-          if position < string.length
+          if position < string.length and string[position] != "\n"
             @valid = true
             return 1
           end
