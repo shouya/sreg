@@ -95,6 +95,13 @@ module Sreg
         # TODO: Give a better solution for these above after alternation
         #+is supported.
 
+        when '|'
+          if @state[:in_char_class]
+            return [:CHAR, '|']
+          else
+            return ['|', nil]
+          end
+
         when '.'
           if @state[:in_char_class]
             return [:CHAR, '.']

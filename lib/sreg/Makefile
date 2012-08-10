@@ -7,9 +7,9 @@ RACC_TARGET = parser.tab.rb
 
 
 $(RACC_TARGET): $(RACC_SOURCE)
-	$(RACC) $< -o $@
+	$(RACC) $< -v -o $@
 
 
 .PHONY : clean
 clean:
-	rm -rf $(RACC_TARGET)
+	rm -f $(RACC_TARGET) *.output

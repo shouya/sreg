@@ -100,7 +100,7 @@ module Sreg
 
         def compromise_from(failed_item_index)
           @elements[0...failed_item_index].reverse.each_with_index do |x, idx|
-            if AbsRepetition === x and x.compromise?
+            if x.compromise?
               x.compromise
               return failed_item_index - idx
             end

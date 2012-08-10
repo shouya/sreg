@@ -9,6 +9,13 @@
 
 class Sreg::Builder::Parser
 
+prechigh
+
+nonassoc HIGH
+nonassoc LOW
+
+preclow
+
 
 options no_result_var
 
@@ -19,12 +26,11 @@ start main_rule
 rule
 
 main_rule
-/*    : alternation */
-    : bunch
+    : alternation
     ;
 
 group
-    : '(' bunch ')'        { Group.new(val[1]) }
+    : '(' alternation ')'        { Group.new(val[1]) }
     ;
 
 repetition
@@ -94,11 +100,11 @@ bunch
     | bunch repetition                  { val[0].append(val[1]) }
     | bunch zw_assertion                { val[0].append(val[1]) }
     ;
-/*
+
 alternation
     : bunch                             { Alternation.new([bunch]) }
     | alternation '|' bunch             { val[0].append(val[2]) }
     ;
-*/
+
 
 end

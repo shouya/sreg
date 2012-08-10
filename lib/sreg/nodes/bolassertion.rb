@@ -5,7 +5,7 @@
 #
 # Sreg Project
 #
-# (C) Shou, 9 August 2012
+# (c) Shou, 9 August 2012
 #
 
 module Sreg

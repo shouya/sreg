@@ -15,7 +15,6 @@ module Sreg
       # Abstract treenode root
       autoload(:Node, 'node.rb')
 
-
       # Character class
       autoload(:AbsCharacterClass, 'char_class') # Abs
       autoload(:CustomCharacterClass, 'custom_char_class')
@@ -47,6 +46,9 @@ module Sreg
       autoload(:Assertion, 'assertion') # Abs
       autoload(:BOLAssertion, 'bolassertion')
       autoload(:EOLAssertion, 'eolassertion')
+
+      # Alternation
+      autoload(:Alternation, 'alternation')
 
     end
 
