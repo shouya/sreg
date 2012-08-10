@@ -140,6 +140,12 @@ class TestLexer < Test::Unit::TestCase
     assert_equal([['^', nil], [:CHAR, 'a'], ['$', nil]], scan('^a$'))
   end
 
+  def test_alternation
+      assert_equal([[:CHAR, 'a'], ['|', nil], [:CHAR, 'b']], scan('a|b'))
+      assert_equal([[:CHAR, 'a'], [:CHAR, '|'], [:CHAR, 'b']], scan('a\|b'))
+      assert_equal([['[', nil], [:CHAR, '|'], [']', nil]], scan('[|]'))
+  end
+
 end
 
 

@@ -17,10 +17,14 @@ module Sreg
           @choices = bunches
           @selected = nil
         end
+        def append(bunch)
+          @choices.push bunch
+          self
+        end
 
         def as_json
           {
-            :alternation => @choices
+            :alternation => @choices.map(&:as_json)
           }
         end
 
@@ -35,6 +39,7 @@ module Sreg
         end
 
         def reset(str, pos)
+          super
           @choices.each do |x|
             if x.reset(str, pos)
               @valid = true

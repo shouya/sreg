@@ -102,7 +102,7 @@ bunch
     ;
 
 alternation
-    : bunch                             { Alternation.new([bunch]) }
+    : bunch                             { Alternation.new([val[0]]) }
     | alternation '|' bunch             { val[0].append(val[2]) }
     ;
 

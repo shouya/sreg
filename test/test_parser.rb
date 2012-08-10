@@ -149,4 +149,10 @@ class TestParser < Test::Unit::TestCase
     assert_equal(:ascii,
                  parse('^[[:ascii:]]$').as_json[1][:children][0][:posix])
   end
+
+
+  def test_alternation
+    assert_equal(:alternation, parse('a|b').as_json.keys[0])
+  end
+
 end
