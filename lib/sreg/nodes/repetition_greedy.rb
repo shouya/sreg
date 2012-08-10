@@ -31,8 +31,8 @@ module Sreg
 
         def pick_init_time(matches)
           repe_time = matches.length
-          if repe_time > @min
-            if repe_time > expand(@max)
+          if repe_time >= @min
+            if repe_time >= expand(@max)
               return @max
             else
               return repe_time
