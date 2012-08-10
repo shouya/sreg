@@ -23,6 +23,30 @@ module Sreg
           self
         end
 
+        def optimize
+          str_buf = []
+          result_buf = []
+          @elements.each do |x|
+            if Character === x
+              str_buf << x.character
+            else
+              if str_buf.empty?
+                o = x.optimize
+                if o.nil?
+                  result_buf << x
+                else
+                  result_buf << o
+                end
+              else
+                result_buf << String.new(str_buf)
+                str_buf = []
+              end
+            end
+          end
+
+          return Bunch.new(result_buf)
+        end
+
         # Compile time
         def as_json
           elements.map(&:as_json)

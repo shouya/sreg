@@ -29,6 +29,10 @@ module Sreg
           as_json.merge(:match => string[@position, length])
         end
 
+        def optimize
+          nil
+        end
+
 
         # Run time
         def length

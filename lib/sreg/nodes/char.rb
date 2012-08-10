@@ -24,7 +24,7 @@ module Sreg
           }
         end
         def to_s
-          @character.inspect[1..-2] # remote surrounding quote marks
+          @character.inspect[1..-2] # remove surrounding quote marks
         end
 
         # Run time

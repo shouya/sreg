@@ -52,6 +52,14 @@ module Sreg
           return false
         end
 
+        def optimize
+          if @choices.length != 1
+            return nil
+          else
+            @choices[0]
+          end
+        end
+
       end
 
 
