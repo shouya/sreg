@@ -30,7 +30,7 @@ module Sreg
         end
 
         def optimize
-          nil
+          self
         end
 
 

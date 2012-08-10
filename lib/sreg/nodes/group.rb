@@ -57,6 +57,10 @@ module Sreg
         end
 
 
+        def optimize
+#          ap @member.optimize
+          return @member.optimize
+        end
 
       end
 

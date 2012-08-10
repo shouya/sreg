@@ -38,6 +38,7 @@ module Sreg
 
       # Other
       autoload(:Character, 'char')
+      autoload(:String, 'string')
       autoload(:Group, 'group')
       autoload(:Bunch, 'bunch')
       autoload(:AnyCharacter, 'any_char')

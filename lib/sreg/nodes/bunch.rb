@@ -31,20 +31,23 @@ module Sreg
               str_buf << x.character
             else
               if str_buf.empty?
-                o = x.optimize
-                if o.nil?
-                  result_buf << x
-                else
-                  result_buf << o
-                end
+                result_buf << x.optimize
               else
                 result_buf << String.new(str_buf)
                 str_buf = []
+                result_buf << x.optimize
               end
             end
           end
+          result_buf << String.new(str_buf) unless str_buf.empty?
 
-          return Bunch.new(result_buf)
+
+          if result_buf.length == 1
+            return result_buf[0]
+          else
+            return Bunch.new(result_buf)
+          end
+
         end
 
         # Compile time

@@ -105,6 +105,12 @@ module Sreg
           return false
         end
 
+        def optimize
+          optimized_member = @member.optimize
+          return self.class.new(optimized_member, @min, @max)
+        end
+
+
         private
         # Expand inifinities
         def expand(number)
@@ -123,11 +129,12 @@ module Sreg
             pos += len
           end
 
-          unless arr.empty?
-            @member.instance_variable_set(:@position, pos - length_arr.last)
+          unless length_arr.empty?
+            @member.reset(string, pos - length_arr.last)
+#            @member.instance_variable_set(:@position, pos - length_arr.last)
           end
 
-          arr
+          length_arr
         end
 
         def pick_init_time(matches)

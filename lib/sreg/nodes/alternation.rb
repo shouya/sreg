@@ -53,11 +53,17 @@ module Sreg
         end
 
         def optimize
-          if @choices.length != 1
-            return nil
-          else
-            @choices[0]
+          new_choices = []
+          @choices.each do |x|
+            new_choices << x.optimize
           end
+
+          if new_choices.length == 1
+            return new_choices[0]
+          else
+            return Alternation.new(new_choices)
+          end
+
         end
 
       end
