@@ -38,9 +38,11 @@ module Sreg
         def length
         end
 
-        def compromise?
+        def compromise?(string = nil)
+          false
         end
-        def compromise
+        def compromise(string = nil)
+          nil
         end
         def valid?
         end

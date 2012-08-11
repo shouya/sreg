@@ -12,8 +12,6 @@ module Sreg
     module AbstractSyntaxTree
 
 
-
-
       class LazyRepetition < AbsRepetition
         def as_json
           super.merge(:behavior => :lazy)
@@ -22,31 +20,48 @@ module Sreg
           super + '?'
         end
 
-        def compromise?
-          return false unless @split_point
-          @split_point <= expand(@max)
-#          !@rest_repeat.empty? and @repeat.length < expand(@max)
+        def compromise?(string)
+          return false if @num_repeat == expand(@max)
+
+          unless @member.reset(string, @position + @length)
+            @member.reset(string, @position + @prev_length)
+            return false
+          end
+          return true
         end
-        def compromise(*)
-          @split_point += 1
-#          @repeat.push(@rest_repeat.shift)
+        def compromise(string)
+          @prev_length = @length
+          @length += @member.reset(string, @position + @length)
+          @num_repeat += 1
+        end
+
+        def reset(string, position)
           super
-        end
 
-        def pick_init_time(matches, open_end)
-          # abstract method
-          # return nil if fail, otherwise return the prior initial time
-          repe_time = matches.length
+          pos = @position
+          match_arr = []
 
-          if repe_time > @min or open_end
-            return @min
+          loop do
+            break if match_arr.length == @min
+
+            return false unless @member.reset(string, pos)
+
+            match_arr << @member.length
+            pos += match_arr.last
           end
 
-          nil
+          @length = match_arr.inject(0, &:+)
+          @prev_length = match_arr[0..-2].inject(0, &:+)
+          @num_repeat = match_arr.length
+          return @length
         end
 
+        def length
+          @length
+        end
 
       end
+
 
     end
   end

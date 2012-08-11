@@ -27,7 +27,7 @@ module Sreg
 
         def match_result(string)
           {
-            :group => @member.match_result,
+            :group => @member.match_result(string),
             :match => string[@position, length]
           }
         end
@@ -59,7 +59,7 @@ module Sreg
 
         def optimize
 #          ap @member.optimize
-          return @member.optimize
+          return Group.new(@member.optimize)
         end
 
       end

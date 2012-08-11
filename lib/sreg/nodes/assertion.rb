@@ -31,14 +31,6 @@ module Sreg
           0
         end
 
-        # Overridable
-        def compromise?
-          false
-        end
-        def compromise
-          nil
-        end
-
         def reset(string, position)
           super
           @valid = conform_to?(string, position)

@@ -11,8 +11,6 @@ module Sreg
 
     module AbstractSyntaxTree
 
-
-
       class GreedyRepetition < AbsRepetition
 
         def as_json
@@ -22,38 +20,53 @@ module Sreg
           super
         end
 
-        def compromise?
-#          return false unless valid?
-          return false unless @split_point
-          return false if @split_point > @min
+        def compromise?(*)
+          return false if @length_list.length == @min
           return true
         end
-        def compromise(*)
-          @split_point -= 1
+
+        def compromise(string)
+          @length_list.pop
+          @member.reset(string, @length_list.inject(0, &:+))
         end
 
-        def pick_init_time(matches, open_end)
-          repe_time = matches.length
+        def reset(string, position)
+          super
 
-          if open_end
-            return @min if @min > repe_time
-            return repe_time if @max == Inf
-            return @max
-          end
+          match_arr = []
 
-          if repe_time >= @min
-            if repe_time >= expand(@max)
-              return @max
-            else
-              return repe_time
+          pos = @position
+
+          loop do
+            break if match_arr.length == @max
+            if @max == Inf and match_arr.last == 0
+              break
             end
+
+            unless @member.reset(string, pos)
+              return false if match_arr.length < @min
+
+              unless match_arr.empty?
+                @member.reset(string, pos - match_arr.last)
+              end
+              break
+
+            end
+
+            match_arr << @member.length
+            pos += match_arr.last
           end
 
-          return nil
+          @length_list = match_arr
+          return length
         end
 
+        def length
+          @length_list.inject(0, &:+)
+        end
 
       end
+
 
     end
   end

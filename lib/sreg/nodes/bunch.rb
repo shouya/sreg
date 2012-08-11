@@ -59,20 +59,6 @@ module Sreg
         end
         def match_result(string)
           @elements.map { |x| x.match_result(string) }
-=begin
-          pos = 0
-          arr = []
-
-          @elements.each do |x|
-            if x.class.method_defined? :match
-              arr << x.match(string[pos..-1])
-            else
-              arr << x.as_json.merge(:match => string[pos, x.length])
-            end
-            pos += x.length
-          end
-          arr
-=end
         end
 
         # Run time
@@ -81,9 +67,16 @@ module Sreg
           @elements.map(&:length).inject(0, &:+)
         end
 
-        def compromise?(to_which)
-#          @elements.any(&:compromise?)
-          @elements.reverse.any?(&:compromise?)
+        def compromise?(str)
+          @elements.reverse.any? {|x| x.compromise?(str) }
+        end
+        def compromise(str)
+          @elements.reverse.each do |x|
+            if x.compromise?(str)
+              x.compromise(str)
+              break
+            end
+          end
         end
 
 #        attr :valid
@@ -128,7 +121,7 @@ module Sreg
 
         def compromise_from(failed_item_index, string)
           @elements[0...failed_item_index].reverse.each_with_index do |x, idx|
-            if x.compromise?
+            if x.compromise?(string)
               x.compromise(string)
               return failed_item_index - idx
             end
