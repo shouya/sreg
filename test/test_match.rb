@@ -197,6 +197,10 @@ class TestMatching < Test::Unit::TestCase
     assert_match('a(b|c|)d', 'ad', 2)
     assert_match('|||', '', 0)
 
+    assert_match('(a+|b+)a', 'aa')
+    assert_match('(a+|b+)b', 'bb')
+    assert_match('(a+|b+)b', 'aab')
+
     # TODO: Support for these (mainly lexer part)
     #    assert_match('^a|^b', 'a', 1)
     #    assert_match('^a|^b', 'b', 1)
