@@ -23,14 +23,24 @@ module Sreg
         end
 
         def compromise?
-          @repeat and @repeat.length > @min
+#          return false unless valid?
+          return false unless @split_point
+          return false if @split_point > @min
+          return true
         end
         def compromise(*)
-          @repeat.pop
+          @split_point -= 1
         end
 
-        def pick_init_time(matches)
+        def pick_init_time(matches, open_end)
           repe_time = matches.length
+
+          if open_end
+            return @min if @min > repe_time
+            return repe_time if @max == Inf
+            return @max
+          end
+
           if repe_time >= @min
             if repe_time >= expand(@max)
               return @max
@@ -38,6 +48,7 @@ module Sreg
               return repe_time
             end
           end
+
           return nil
         end
 

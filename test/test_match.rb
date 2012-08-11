@@ -164,15 +164,16 @@ class TestMatching < Test::Unit::TestCase
     assert_match('.+?.+?', '1234', 2)
     assert_match('(\w|\d)+', '12ab', 4)
 
+    assert_match('()+a', 'a')
+    assert_match('(){3,5}a', 'a', 1)
 
-    # TODO: These should be supported (repetition with zero-width)
-    #    assert_match('()+a', 'a')
-    #    assert_match('(){3,5}a', 'a', 1)
+    assert_match('(a|){2,}b', 'ab', 2)
+    assert_match('(a|){2,}?b', 'ab', 2)
   end
 
   def test_assertion
-
     # TODO: Some assertions of this test need `global shift' support
+    # TODO: Word boundary support
 
 #    assert_match('b', 'abc', 1)
     assert_not_match('^b', 'abc')

@@ -23,19 +23,24 @@ module Sreg
         end
 
         def compromise?
-          !@rest_repeat.empty? and @repeat.length < expand(@max)
+          return false unless @split_point
+          @split_point <= expand(@max)
+#          !@rest_repeat.empty? and @repeat.length < expand(@max)
         end
         def compromise(*)
-          @repeat.push(@rest_repeat.shift)
+          @split_point += 1
+#          @repeat.push(@rest_repeat.shift)
         end
 
-        def pick_init_time(matches)
+        def pick_init_time(matches, open_end)
           # abstract method
           # return nil if fail, otherwise return the prior initial time
-          repe = matches.length
-          if repe > @min
+          repe_time = matches.length
+
+          if repe_time > @min or open_end
             return @min
           end
+
           nil
         end
 

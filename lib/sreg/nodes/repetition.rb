@@ -12,6 +12,26 @@ module Sreg
     module AbstractSyntaxTree
 
 
+      class RepetitionBuffer
+        def initialize
+        end
+
+        def taken_part
+        end
+        def rest_part
+        end
+
+        def shift
+        end
+        def chop
+        end
+
+        def pos
+        end
+
+        def possible_repetition
+        end
+      end
 
 
       class AbsRepetition < Node
@@ -19,6 +39,8 @@ module Sreg
 
         attr_reader :min, :max
         attr_reader :member
+        attr_reader :split_point
+        attr_reader :repeat #TODO: rename to `repeats'
 
         def initialize(member, min, max)
           @member = member
@@ -27,8 +49,6 @@ module Sreg
           # -1 == Infinity
           @min = min
           @max = max
-
-          @repeat = nil
         end
 
         def as_json
@@ -74,14 +94,17 @@ module Sreg
 
         attr :repeat, :rest_repeat
         def length
-          @valid ? @repeat.inject(0, &:+) : 0
+          return 0 unless @valid
+#          return @repeat.inject(0, &:+) if @split_point == Inf
+          return 0 if @split_point <= 0
+          return @repeat[0..(@split_point - 1)].inject(0, &:+)
         end
 
+        # Abstract methods
         def compromise?
-#          @repeat and @repeat.length > @min
         end
         def compromise(*)
-          @repeat.pop
+#          @member.reset(string, @repeat[@split_point])
         end
 
         attr :valid
@@ -91,11 +114,9 @@ module Sreg
 
         def reset(string, position)
           super
-          repeat = match_time(string)
+          @repeat, open_end = match_time(string)
 
-          if repe_time = pick_init_time(repeat)
-            @repeat = repeat[0, repe_time]
-            @rest_repeat = repeat[repe_time..-1]
+          if @split_point = pick_init_time(@repeat, open_end)
             @valid = true
             return length
           end
@@ -123,8 +144,12 @@ module Sreg
         def match_time(string)
           length_arr = []
           pos = @position
+          open_end = false
           while len = @member.reset(string, pos)
-            break if len == 0
+            if len == 0
+              open_end = true
+              break
+            end
             length_arr << @member.length
             pos += @member.length
           end
@@ -134,10 +159,10 @@ module Sreg
 #            @member.instance_variable_set(:@position, pos - length_arr.last)
           end
 
-          length_arr
+          return [length_arr, open_end]
         end
 
-        def pick_init_time(matches)
+        def pick_init_time(matches, open_end)
           # abstract method
           # return nil if fail, otherwise return the prior initial time
         end
