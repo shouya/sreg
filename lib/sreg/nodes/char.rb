@@ -32,13 +32,6 @@ module Sreg
           @valid ? 1 : 0
         end
 
-        def compromise?
-          false
-        end
-        def compromise
-          nil
-        end
-
         attr :valid
         def valid?
           return @valid

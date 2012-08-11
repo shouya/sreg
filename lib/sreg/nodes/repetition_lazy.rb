@@ -20,19 +20,18 @@ module Sreg
           super + '?'
         end
 
-        def compromise?(string)
+        def backtrack(string)
           return false if @num_repeat == expand(@max)
-
           unless @member.reset(string, @position + @length)
             @member.reset(string, @position + @prev_length)
             return false
           end
-          return true
-        end
-        def compromise(string)
+
           @prev_length = @length
           @length += @member.reset(string, @position + @length)
           @num_repeat += 1
+
+          return true
         end
 
         def reset(string, position)

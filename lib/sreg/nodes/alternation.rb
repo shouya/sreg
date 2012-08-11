@@ -12,10 +12,10 @@ module Sreg
 
       class Alternation < Node
 
-        attr :choices, :selected
+        attr :choices, :selected_index
         def initialize(bunches)
           @choices = bunches
-          @selected = nil
+          @selected_index = nil
         end
         def append(bunch)
           @choices.push bunch
@@ -29,15 +29,31 @@ module Sreg
         end
 
         def length
-          @valid ? @selected.length : 0
+          @valid ? @choices[@selected_index].length : 0
+        end
+
+        def backtrack(str)
+          old_selected_index = @selected_index
+
+          return true if @choices[@selected_index].backtrack(str)
+
+          @selected_index += 1
+          while @selected_index < @choices.length
+            return true if @choices[@selected_index].reset(str, @position)
+            @selected_index += 1
+          end
+
+          @selected_index = old_selected_index
+
+          return false
         end
 
         def reset(str, pos)
           super
-          @choices.each do |x|
+          @choices.each_with_index do |x, idx|
             if x.reset(str, pos)
               @valid = true
-              @selected = x
+              @selected_index = idx
               return x.length
             end
           end

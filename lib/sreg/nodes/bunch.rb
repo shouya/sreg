@@ -67,16 +67,11 @@ module Sreg
           @elements.map(&:length).inject(0, &:+)
         end
 
-        def compromise?(str)
-          @elements.reverse.any? {|x| x.compromise?(str) }
-        end
-        def compromise(str)
+        def backtrack(string)
           @elements.reverse.each do |x|
-            if x.compromise?(str)
-              x.compromise(str)
-              break
-            end
+            return true if x.backtrack(string)
           end
+          false
         end
 
 #        attr :valid
@@ -112,17 +107,16 @@ module Sreg
 
 
           # interrupted
-          if start = compromise_from(failed_item_index, string)
+          if start = backtrack_from(failed_item_index, string)
             return reset_from(string, start)
           else
             return false
           end
         end
 
-        def compromise_from(failed_item_index, string)
+        def backtrack_from(failed_item_index, string)
           @elements[0...failed_item_index].reverse.each_with_index do |x, idx|
-            if x.compromise?(string)
-              x.compromise(string)
+            if x.backtrack(string)
               return failed_item_index - idx
             end
           end

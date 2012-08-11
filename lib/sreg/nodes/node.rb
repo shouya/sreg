@@ -18,32 +18,38 @@ module Sreg
         def initialize
         end
 
-        # Compile time
+        # return a JSON compatible object that describe self
+        # (i.e. Hash, Array, Number, String, Boolean & Nil)
         def as_json
         end
         def to_s
         end
         def inspect
         end
+
         def match_result(string)
           as_json.merge(:match => string[@position, length])
         end
 
+        # optimize self and children
+        # return the new optimized node for replacing itself
+        # or return `self` directly if there's no optimize ways
         def optimize
           self
         end
 
 
-        # Run time
         def length
         end
 
-        def compromise?(string = nil)
+
+        # return false if can't backtrack,
+        # otherwise, backtrack and return a non-false value.
+        def backtrack(string)
           false
         end
-        def compromise(string = nil)
-          nil
-        end
+
+        # return if the node is matched validly.
         def valid?
         end
 
@@ -52,7 +58,7 @@ module Sreg
           nil
         end
 
-        # For optimization, not used now
+        # for further optimization, not used now.
         def min_length
           0
         end

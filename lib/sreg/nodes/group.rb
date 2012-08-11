@@ -41,12 +41,10 @@ module Sreg
           @member.length
         end
 
-        def compromise?(*whatever)
-          @member.compromise?(*whatever)
+        def backtrack(str)
+          @member.backtrack(str)
         end
-        def compromise(*we)
-          @member.compromise(*we)
-        end
+
         def valid?
           @member.valid?
         end
