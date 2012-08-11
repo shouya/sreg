@@ -93,18 +93,46 @@ module Sreg
 
 
         attr :repeat, :rest_repeat
-        def length
+        def length(but_one = false)
           return 0 unless @valid
-#          return @repeat.inject(0, &:+) if @split_point == Inf
-          return 0 if @split_point <= 0
-          return @repeat[0..(@split_point - 1)].inject(0, &:+)
+          if but_one
+            return 0 if @split_point - 1 <= 0
+            return @repeat[0..(@split_point - 2)].inject(0, &:+)
+          else
+            return 0 if @split_point <= 0
+            return @repeat[0..(@split_point - 1)].inject(0, &:+)
+          end
         end
 
         # Abstract methods
         def compromise?
         end
-        def compromise(*)
-#          @member.reset(string, @repeat[@split_point])
+        def compromise(str)
+          reset_member_position(str)
+        end
+
+        def reset_member_position(str)
+          # Damn it. This is just a very ugly solution.
+          #+As this is not basically the best way for the
+          #+exactly matching problem.
+          # For solve this problem perfectly, the Repetition class need
+          #+to be completely rewritten.
+
+          # First, the matching method (i.e. match_time) needs
+          #+to match string base on the behavior (i.e. greedy or lazy),
+          #+min and max times, not just like this, match all and choose
+          #+afterwards.
+
+          # I suppose I'll do this tomorrow.
+
+          if @split_point < 2
+#            @member.set_invalid
+            return
+          end
+          pos = @position
+          pos += @repeat[0..(@split_point - 2)].inject(0, &:+)
+
+          @member.reset(str, pos)
         end
 
         attr :valid
@@ -117,6 +145,7 @@ module Sreg
           @repeat, open_end = match_time(string)
 
           if @split_point = pick_init_time(@repeat, open_end)
+            reset_member_position(string)
             @valid = true
             return length
           end
@@ -151,12 +180,7 @@ module Sreg
               break
             end
             length_arr << @member.length
-            pos += @member.length
-          end
-
-          unless length_arr.empty?
-            @member.reset(string, pos - length_arr.last)
-#            @member.instance_variable_set(:@position, pos - length_arr.last)
+            pos += length_arr.last
           end
 
           return [length_arr, open_end]

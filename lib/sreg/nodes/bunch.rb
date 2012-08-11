@@ -119,17 +119,17 @@ module Sreg
 
 
           # interrupted
-          if start = compromise_from(failed_item_index)
+          if start = compromise_from(failed_item_index, string)
             return reset_from(string, start)
           else
             return false
           end
         end
 
-        def compromise_from(failed_item_index)
+        def compromise_from(failed_item_index, string)
           @elements[0...failed_item_index].reverse.each_with_index do |x, idx|
             if x.compromise?
-              x.compromise
+              x.compromise(string)
               return failed_item_index - idx
             end
           end

@@ -30,6 +30,7 @@ module Sreg
         def compromise(*)
           @split_point += 1
 #          @repeat.push(@rest_repeat.shift)
+          super
         end
 
         def pick_init_time(matches, open_end)
