@@ -28,12 +28,6 @@ module Sreg
           }
         end
 
-        def compromise?
-          false
-        end
-        def compromise
-          nil
-        end
         def length
           @valid ? @selected.length : 0
         end

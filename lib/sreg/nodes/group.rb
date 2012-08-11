@@ -41,11 +41,11 @@ module Sreg
           @member.length
         end
 
-        def compromise?
-          @member.compromise?
+        def compromise?(*whatever)
+          @member.compromise?(*whatever)
         end
-        def compromise
-          @member.compromise
+        def compromise(*we)
+          @member.compromise(*we)
         end
         def valid?
           @member.valid?
