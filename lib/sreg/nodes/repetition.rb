@@ -6,7 +6,7 @@
 #
 
 
-module Sreg
+class Sreg
   module Builder
 
     module AbstractSyntaxTree
@@ -19,7 +19,6 @@ module Sreg
 
         def initialize(member, min, max)
           @member = member
-          @member.parent = self
 
           @min = min
           @max = max

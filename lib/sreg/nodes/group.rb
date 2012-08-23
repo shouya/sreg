@@ -6,16 +6,43 @@
 #
 
 
-module Sreg
+class Sreg
   module Builder
     module AbstractSyntaxTree
 
       class Group < Node
 
-        attr_reader :member
+        class << self
+          alias_method :new_without_reindex, :new
+          def new(*args)
+            tmp = new_without_reindex(*args)
+            tmp.register
+            tmp
+          end
+
+          def new_reindex(*args, index)
+            tmp = new_without_reindex(*args)
+            tmp.register(index)
+            tmp
+          end
+
+        end
+
+        attr_reader :member, :ref_index
+        # NOTICE: this method is not multiply callable as it may
+        #+taint the reference table. So be careful in optimization stage.
         def initialize(member)
           @member = member
-          @member.parent = self
+        end
+
+        def register(n = nil)
+          if reg_obj.ref_table.is_number_type?
+            if n
+              @ref_index = reg_obj.ref_table.set_number_map(n, self)
+            else
+              @ref_index = reg_obj.ref_table.insert_number_map(self)
+            end
+          end
         end
 
         # Compile time
@@ -56,8 +83,7 @@ module Sreg
 
 
         def optimize
-#          ap @member.optimize
-          return Group.new(@member.optimize)
+          return Group.new_reindex(@member.optimize, @ref_index)
         end
 
       end

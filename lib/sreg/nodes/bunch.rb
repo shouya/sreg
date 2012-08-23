@@ -5,7 +5,7 @@
 # Shou, 1 August 2012
 #
 
-module Sreg
+class Sreg
   module Builder
     module AbstractSyntaxTree
       class Bunch < Node
@@ -15,11 +15,9 @@ module Sreg
           @elements = elements
           @valid = nil
 
-          @elements.each { |x| x.parent = self }
         end
         def append(element)
           @elements << element
-          element.parent = self
           self
         end
 

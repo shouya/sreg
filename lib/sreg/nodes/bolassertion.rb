@@ -8,7 +8,7 @@
 # (c) Shou, 9 August 2012
 #
 
-module Sreg
+class Sreg
   module Builder
     module AbstractSyntaxTree
 

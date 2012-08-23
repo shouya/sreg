@@ -5,7 +5,7 @@
 #
 #
 
-module Sreg
+class Sreg
 
   module Builder
     $LOAD_PATH << File.dirname(__FILE__)

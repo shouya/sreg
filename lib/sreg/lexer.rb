@@ -7,7 +7,7 @@
 
 require 'stringio'
 
-module Sreg
+class Sreg
   module Builder
     class LexerError < Exception; end
 
@@ -194,7 +194,8 @@ module Sreg
           return [:CHAR, '{'] if @state[:in_char_class]
 
           if @state[:in_repetition_spec]
-            error 'Can\'t have special characters in repetition specification.'
+            error 'Can\'t have special characters' \
+                  'in repetition specification.'
           else
             @state[:in_repetition_spec] = true
             return parse_repetition
@@ -341,7 +342,6 @@ module Sreg
             break
           end
         end
-
         @stream.ungetc(char)
 
         result_str

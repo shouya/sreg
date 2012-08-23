@@ -5,7 +5,7 @@
 #
 
 
-module Sreg
+class Sreg
   module Builder
     module AbstractSyntaxTree
 
@@ -13,7 +13,6 @@ module Sreg
       class Node
 
         attr_reader :position
-        attr_accessor :parent
 
         def initialize
         end
