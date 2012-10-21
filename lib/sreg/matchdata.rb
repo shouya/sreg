@@ -25,14 +25,18 @@ class Sreg
 
     attr_reader :regexp
     attr_reader :string
-    attr_reader :length
-
 
     attr :match_begin
     attr :match_length
 
     attr :match_captures
 
+    def pos
+      @match_begin
+    end
+    def length
+      @match_length
+    end
 
     def initialize
       @match_captures = []

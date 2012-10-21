@@ -9,21 +9,21 @@ class TestMatching < Test::Unit::TestCase
   end
 
   def assert_match(regexp, string, length = nil)
-    mtch_normal = (compile(regexp) =~ string)
-    mtch_not_optimized = (compile(regexp, true) =~ string)
+    regexp_normal = compile(regexp)
+    regexp_not_optimized = compile(regexp, true)
 
-    assert_not_equal(nil, mtch_normal)
-    assert_not_equal(nil, mtch_not_optimized)
+    assert_not_equal(nil, regexp_normal =~ string)
+    assert_not_equal(nil, regexp_not_optimized =~ string)
 
     if length
-      assert_equal(length, mtch_normal)
-      assert_equal(length, mtch_not_optimized)
+      assert_equal(length, regexp_normal.last_match.length)
+      assert_equal(length, regexp_not_optimized.last_match.length)
     end
   end
 
   def assert_not_match(regexp, string)
-    assert_equal(0, compile(regexp) -~ string)
-    assert_equal(0, compile(regexp, true) -~ string)
+    assert_equal(nil, compile(regexp) =~ string)
+    assert_equal(nil, compile(regexp, true) =~ string)
   end
 
   def test_basis
@@ -197,7 +197,9 @@ class TestMatching < Test::Unit::TestCase
     assert_not_match('(a{2,3}|b{3,4})c', 'ac')
     assert_match('(a{2,3}|b{3,4})c', 'aac')
     assert_match('(a{2,3}|b{3,4})c', 'aaac')
-    assert_not_match('(a{2,3}|b{3,4})c', 'aaaac')
+    # This will match now, as it will travarse all the string and match
+    #+on position 1.
+    #    assert_not_match('(a{2,3}|b{3,4})c', 'aaaac')
 
     assert_not_match('(a{2,3}|b{3,4})c', 'c')
     assert_not_match('(a{2,3}|b{3,4})c', 'bbc')
@@ -219,5 +221,6 @@ class TestMatching < Test::Unit::TestCase
     # This is actually not needed, as above tests already qualified it.
     nil
   end
+
 end
 

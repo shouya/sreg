@@ -30,6 +30,7 @@ class Sreg
       cons.parse_string(regexp)
       reg = cons.do_parse
 
+      @regexp = reg
       @regexp = reg.optimize unless options[:O0]
     end
 
