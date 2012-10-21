@@ -34,8 +34,13 @@ class Sreg
       @regexp = reg.optimize unless options[:O0]
     end
 
+    def ==(rhs)
+      return @regexp == rhs.regxp
+    end
+
     def match(str, pos = 0)
       @source = str
+      # TODO
     end
 
     def last_match(n = nil)

@@ -206,7 +206,8 @@ class TestMatching < Test::Unit::TestCase
     assert_not_match('(a{2,3}|b{3,4})c', 'abbc')
     assert_match('(a{2,3}|b{3,4})c', 'bbbc')
     assert_match('(a{2,3}|b{3,4})c', 'bbbbc')
-    assert_not_match('(a{2,3}|b{3,4})c', 'bbbbbc')
+    # By the same reason as above
+    #    assert_not_match('(a{2,3}|b{3,4})c', 'bbbbbc')
 
     assert_match('(a+|b+)(c+|d+)(e+|f+)(g+|h+)',
                  'aaadddfhhhh')

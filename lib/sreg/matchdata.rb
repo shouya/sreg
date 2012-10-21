@@ -31,17 +31,18 @@ class Sreg
 
     attr :match_captures
 
+    def initialize
+      @match_captures = []
+    end
+
+
     def pos
       @match_begin
     end
     def length
       @match_length
     end
-
-    def initialize
-      @match_captures = []
-    end
-
+    alias_method :size, :length
 
     def [](a, b = nil)
       case a
@@ -58,17 +59,44 @@ class Sreg
       end
     end
 
-
-    def []=(idx, val)
-      @match_captures[idx] = val
-    end
-
     def to_a
       arr = [] << @string[@match_begin, @match_length]
       @match_captures.each do |(pos, len)|
         arr << @string[pos, len]
       end
       arr
+    end
+
+    def captures
+      to_a[1..-1]
+    end
+
+    def ==(rhs)
+      return false unless @string == rhs.string
+      return false unless @regexp == rhs.regexp
+      return false unless self.pos == rhs.pos
+      return false unless self.length == rhs.length
+      return false unless self.to_a == rhs.to_a
+      return true
+    end
+
+    def offset(n)
+      [@match_captures[n].first,
+       @match_captures[n].last + @match_captures[n].first]
+    end
+
+    def post_match
+      @string[0..pos]
+    end
+    def post_match
+      @string[(pos+length)..-1]
+    end
+
+    def to_s
+      @string[pos, length]
+    end
+    def values_at(*args)
+      to_a.values_at(*args)
     end
 
     private
