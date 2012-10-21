@@ -1,36 +1,29 @@
-require '../lib/sreg/builder'
+require_relative '../lib/sreg'
 
 require 'test/unit'
 
 class TestMatching < Test::Unit::TestCase
 
   def compile(regexp, optimization = false)
-    r = Sreg::Builder::Constructor.new
-    r.parse_string(regexp)
-    if optimization
-      return r.do_parse.optimize
-    else
-      return r.do_parse
-    end
+    return Sreg.new(regexp, :O0 => !optimization)
   end
+
   def assert_match(regexp, string, length = nil)
-    assert_not_equal(false, compile(regexp).reset(string, 0))
-    assert_not_equal(false, compile(regexp, true).reset(string, 0))
+    mtch_normal = (compile(regexp) =~ string)
+    mtch_not_optimized = (compile(regexp, true) =~ string)
+
+    assert_not_equal(nil, mtch_normal)
+    assert_not_equal(nil, mtch_not_optimized)
 
     if length
-      r = compile(regexp)
-      r.reset(string, 0)
-      assert_equal(length, r.length)
-
-      r = compile(regexp, true)
-      r.reset(string, 0)
-      assert_equal(length, r.length)
+      assert_equal(length, mtch_normal)
+      assert_equal(length, mtch_not_optimized)
     end
   end
 
   def assert_not_match(regexp, string)
-    assert_equal(false, compile(regexp).reset(string, 0))
-    assert_equal(false, compile(regexp, true).reset(string, 0))
+    assert_equal(0, compile(regexp) -~ string)
+    assert_equal(0, compile(regexp, true) -~ string)
   end
 
   def test_basis
