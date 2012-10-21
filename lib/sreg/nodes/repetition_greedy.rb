@@ -6,7 +6,7 @@
 #
 
 
-module Sreg
+class Sreg
   module Builder
 
     module AbstractSyntaxTree
@@ -20,14 +20,13 @@ module Sreg
           super
         end
 
-        def compromise?(*)
+        def backtrack(string)
           return false if @length_list.length == @min
-          return true
-        end
 
-        def compromise(string)
           @length_list.pop
-          @member.reset(string, @length_list.inject(0, &:+))
+          @member.reset(string, @position + @length_list.inject(0, &:+))
+
+          return true
         end
 
         def reset(string, position)

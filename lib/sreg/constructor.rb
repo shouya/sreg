@@ -7,7 +7,7 @@
 
 require_relative './builder'
 
-module Sreg
+class Sreg
 
   module Builder
 
@@ -16,7 +16,10 @@ module Sreg
       attr_accessor :scanner, :parser
       attr_accessor :options
 
-      def initialize(options = {})
+      attr :reg_obj
+
+      def initialize(reg_obj, options = {})
+        @reg_obj = reg_obj
         @options = options
 
         @scanner = Lexer.new
@@ -27,6 +30,16 @@ module Sreg
 
         # Temporary solution:
         @parser.class.send :include, AbstractSyntaxTree
+
+
+        # Tmp
+        tmp = @reg_obj
+        AbstractSyntaxTree::Node.class_eval do
+          define_method :reg_obj do
+            return tmp
+          end
+        end
+
 
       end
 
@@ -51,6 +64,9 @@ module Sreg
           define_method :included do |who|
             who.alias_method :on_error_old, :on_error
           end
+
+
+
 =begin
           define_method :on_error do |id, val, vstack|
             # error reporting
@@ -58,6 +74,7 @@ module Sreg
 =end
 
         end
+
       end
     end
 

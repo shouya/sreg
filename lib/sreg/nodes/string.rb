@@ -7,7 +7,7 @@
 #
 
 
-module Sreg
+class Sreg
   module Builder
     module AbstractSyntaxTree
 
@@ -28,13 +28,6 @@ module Sreg
 
         def length
           @valid ? @string.length : 0
-        end
-
-        def compromise?
-          false
-        end
-        def compromise
-          nil
         end
 
         attr :valid

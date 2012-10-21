@@ -3,7 +3,7 @@
 # Sreg project
 #
 # Shou, 1 August 2012
-module Sreg
+class Sreg
   module Builder
 
     module AbstractSyntaxTree
@@ -28,13 +28,6 @@ module Sreg
         # Run time
         def length
           @valid ? 1 : 0
-        end
-
-        def compromise?
-          false
-        end
-        def compromise
-          nil
         end
 
         attr :valid

@@ -7,7 +7,7 @@
 #
 
 
-module Sreg
+class Sreg
   module Builder
     module AbstractSyntaxTree
 
