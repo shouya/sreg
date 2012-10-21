@@ -30,7 +30,7 @@ class Sreg
       cons.parse_string(regexp)
       reg = cons.do_parse
 
-      @regexp = reg.optimize
+      @regexp = reg.optimize unless options[:O0]
     end
 
     def match(str, pos = 0)
@@ -65,14 +65,11 @@ class Sreg
       # TODO: Finish this function
       # Refer data from `str` and the `@ref_table`,
       # then save the match result into the `@match_result`
-      @match_result = MatchData.send :_alloc
-
-      @match_result.send(:set_match, str, pos, len)
+      @match_result = MatchData.send(:build, str, pos, len)
 
       @ref_table.number_map.each_with_index do |ref_obj, n|
-        @match_result[n] = [ref_obj.position, ref_obj.length]
+        @match_result.send :set_capture, n, ref_obj.position, ref_obj.length
       end
-
     end
 
 
@@ -82,5 +79,6 @@ class Sreg
 
   module ClassMethods
   end
+
 end
 

@@ -12,22 +12,30 @@ class Sreg
       alias_method :_alloc, :new
       private :_alloc
       undef_method :new
-    end
 
+      private
+      def build(str, mtch_pos, mtch_len)
+        obj = _alloc
+        obj.instance_variable_set :@string, str
+        obj.instance_variable_set :@match_begin, mtch_pos
+        obj.instance_variable_set :@match_length, mtch_len
+        obj
+      end
+    end
 
     attr_reader :regexp
     attr_reader :string
     attr_reader :length
 
 
-    attr :match_beg
-    attr :match_len
+    attr :match_begin
+    attr :match_length
 
-    attr :match_caps
+    attr :match_captures
 
 
     def initialize
-      @match_caps = []
+      @match_captures = []
     end
 
 
@@ -48,22 +56,20 @@ class Sreg
 
 
     def []=(idx, val)
-      @match_caps[idx] = val
+      @match_captures[idx] = val
     end
 
     def to_a
-      arr = [] << @string[@match_beg, @match_len]
-      @match_caps.each do |(pos, len)|
+      arr = [] << @string[@match_begin, @match_length]
+      @match_captures.each do |(pos, len)|
         arr << @string[pos, len]
       end
       arr
     end
 
     private
-    def set_match(str, pos, len)
-      @string = str
-      @match_beg = pos
-      @match_len = len
+    def set_capture(index, pos, len)
+      @match_captures[index] = [pos, len]
     end
 
   end
