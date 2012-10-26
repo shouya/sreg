@@ -1,3 +1,5 @@
 *.tab.rb
 tmp/*
 *.xmind
+*.output
+

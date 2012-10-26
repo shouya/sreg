@@ -19,6 +19,7 @@ class Sreg
 
     attr_reader :options
 
+
     def initialize(regexp, options = {})
       @source = regexp
       @options = options

@@ -27,6 +27,9 @@ class Sreg
             :alternation => @choices.map(&:as_json)
           }
         end
+        def to_s
+          return @choices.join('|')
+        end
 
         def length
           @valid ? @choices[@selected_index].length : 0

@@ -85,7 +85,7 @@ class Sreg
        @match_captures[n].last + @match_captures[n].first]
     end
 
-    def post_match
+    def pre_match
       @string[0..pos]
     end
     def post_match
